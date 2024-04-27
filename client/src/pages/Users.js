@@ -48,7 +48,7 @@ const Users = () => {
       };
 
       const { data } = await axios.get(
-        "https://pos-cbfa.onrender.com/users/users",
+        "https://pos-mh.onrender.com/users/users",
         conAuth
       );
 
@@ -98,14 +98,14 @@ const Users = () => {
       };
       if (editingUserId) {
         await axios.put(
-          `https://pos-cbfa.onrender.com/users/users/${editingUserId}`,
+          `https://pos-mh.onrender.com/users/users/${editingUserId}`,
           formData,
           conAuth
         );
         toast.success("User Updated Successfully");
       } else {
         await axios.post(
-          `https://pos-cbfa.onrender.com/users/register`,
+          `https://pos-mh.onrender.com/users/register`,
           formData,
           conAuth
         );
@@ -124,7 +124,7 @@ const Users = () => {
   const handleDelete = async (userId) => {
     try {
       dispatch({ type: "SHOW_LOADING" });
-      await axios.delete(`https://pos-cbfa.onrender.com/users/users/${userId}`);
+      await axios.delete(`https://pos-mh.onrender.com/users/users/${userId}`);
       toast.success("User Deleted Successfully");
       fetchData();
     } catch (error) {

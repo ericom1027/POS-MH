@@ -20,7 +20,7 @@ const ShiftPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [dailySalesPerCashier, setDailySalesPerCashier] = useState({}); // State for daily sales per cashier
+  const [dailySalesPerCashier, setDailySalesPerCashier] = useState({});
   const componentRef = useRef();
 
   const toastOptions = {
@@ -41,7 +41,7 @@ const ShiftPage = () => {
     try {
       const formattedDate = formatDate(selectedDate);
       const response = await axios.post(
-        "https://pos-cbfa.onrender.com/shifts/allShift",
+        "https://pos-mh.onrender.com/shifts/allShift",
         { selectedDate: formattedDate }
       );
       if (response.status === 200) {
@@ -62,7 +62,7 @@ const ShiftPage = () => {
     const token = localStorage.getItem("token");
     if (token && !user) {
       axios
-        .get(`https://pos-cbfa.onrender.com/shifts/getShift`, {
+        .get(`https://pos-mh.onrender.com/shifts/getShift`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -78,7 +78,7 @@ const ShiftPage = () => {
       try {
         const timestamp = selectedDate.getTime();
         const response = await axios.get(
-          "https://pos-cbfa.onrender.com/bills/daily-sales",
+          "https://pos-mh.onrender.com/bills/daily-sales",
           {
             params: {
               createdAt: timestamp,

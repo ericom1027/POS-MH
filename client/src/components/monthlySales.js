@@ -20,7 +20,7 @@ function MonthlySales() {
         );
 
         const response = await axios.post(
-          "https://pos-cbfa.onrender.com/bills/monthly",
+          "https://pos-mh.onrender.com/bills/monthly",
           {
             startDate: firstDayOfMonth.toISOString(),
             endDate: lastDayOfMonth.toISOString(),

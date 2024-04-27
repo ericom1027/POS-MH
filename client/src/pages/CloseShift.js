@@ -21,7 +21,7 @@ const CloseShift = () => {
     const token = localStorage.getItem("token");
     if (token && !user) {
       axios
-        .get(`https://pos-cbfa.onrender.com/shifts/getShift`, {
+        .get(`https://pos-mh.onrender.com/shifts/getShift`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => console.log(response.data))
@@ -38,7 +38,7 @@ const CloseShift = () => {
       }
 
       await axios.put(
-        "https://pos-cbfa.onrender.com/shifts/closeShift",
+        "https://pos-mh.onrender.com/shifts/closeShift",
         { firstName: user.firstName, endingCash: closingShift.endingCash },
         { headers: { Authorization: `Bearer ${token}` } }
       );

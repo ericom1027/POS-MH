@@ -116,10 +116,7 @@ export default function CartPage() {
         invoiceNumber: salesInvoiceNo,
       };
 
-      await axios.post(
-        "https://pos-cbfa.onrender.com/bills/add-bills",
-        newBill
-      );
+      await axios.post("https://pos-mh.onrender.com/bills/add-bills", newBill);
       toast.success("Bill generated successfully");
 
       dispatch({ type: "CLEAR_CART" });

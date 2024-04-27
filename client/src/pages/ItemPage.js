@@ -34,7 +34,7 @@ const ItemPage = () => {
     try {
       dispatch({ type: "SHOW_LOADING" });
       const { data } = await axios.get(
-        "https://pos-cbfa.onrender.com/items/get-item"
+        "https://pos-mh.onrender.com/items/get-item"
       );
 
       if (data && Array.isArray(data.items)) {
@@ -76,13 +76,13 @@ const ItemPage = () => {
       dispatch({ type: "SHOW_LOADING" });
       if (editingItemId) {
         await axios.put(
-          `https://pos-cbfa.onrender.com/items/${editingItemId}/edit`,
+          `https://pos-mh.onrender.com/items/${editingItemId}/edit`,
           formData
         );
         toast.success("Item Updated Successfully");
       } else {
         await axios.post(
-          "https://pos-cbfa.onrender.com/items/add-item",
+          "https://pos-mh.onrender.com/items/add-item",
           formData
         );
         toast.success("Item Added Successfully");
@@ -102,7 +102,7 @@ const ItemPage = () => {
   const handleDelete = async (itemId) => {
     try {
       dispatch({ type: "SHOW_LOADING" });
-      await axios.delete(`https://pos-cbfa.onrender.com/items/${itemId}`);
+      await axios.delete(`https://pos-mh.onrender.com/items/${itemId}`);
       toast.success("Item Deleted Successfully");
       fetchData();
     } catch (error) {

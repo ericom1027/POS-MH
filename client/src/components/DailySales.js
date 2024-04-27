@@ -15,7 +15,7 @@ function DailySales() {
 
         // Make a POST request to fetch the daily sales
         const response = await axios.post(
-          "https://pos-cbfa.onrender.com/bills/day-sales",
+          "https://pos-mh.onrender.com/bills/day-sales",
           {
             startOfDay: startOfDay,
             endOfDay: endOfDay,

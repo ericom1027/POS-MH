@@ -18,7 +18,7 @@ const WeeklySales = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://pos-cbfa.onrender.com/bills/weekly-sales",
+          "https://pos-mh.onrender.com/bills/weekly-sales",
           { start: startDate, end: endDate }
         );
         setWeeklySales(response.data);

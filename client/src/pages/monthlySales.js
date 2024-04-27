@@ -18,7 +18,7 @@ const MonthlySales = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "https://pos-cbfa.onrender.com/bills/monthly-sales",
+          "https://pos-mh.onrender.com/bills/monthly-sales",
           { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
         );
         setMonthlySales(response.data);

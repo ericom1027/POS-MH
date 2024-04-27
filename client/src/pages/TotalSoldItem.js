@@ -29,7 +29,7 @@ const TotalSoldItem = () => {
         endOfDay.setHours(23, 59, 59, 999);
 
         const response = await axios.post(
-          "https://pos-cbfa.onrender.com/bills/sales",
+          "https://pos-mh.onrender.com/bills/sales",
           {
             startOfDay: startOfDay.toISOString(),
             endOfDay: endOfDay.toISOString(),

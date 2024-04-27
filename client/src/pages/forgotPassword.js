@@ -12,7 +12,7 @@ export default function ForgotPassword() {
 
     try {
       const response = await axios.post(
-        "https://pos-cbfa.onrender.com/users/forgot-password",
+        "https://pos-mh.onrender.com/users/forgot-password",
         { email },
         {
           headers: {
