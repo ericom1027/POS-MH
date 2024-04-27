@@ -1,0 +1,427 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: "Quicksand", sans-serif;
+  
+}
+
+.align-items-start{
+  margin-top: auto;
+}
+
+.custom-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+
+.custom-card-img {
+  margin: 8px;
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+}
+
+
+ /* #btn {
+ padding: 10px 20px;
+  border: none;
+  border-radius: 15px; 
+ } */
+
+ .Toolbar {
+   display: flex;
+   justify-content: space-between;
+   line-height: 0;
+ }
+
+
+.loading-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.icons {
+  cursor: pointer;
+}
+
+/* ITEMS PAGE */
+.btn-addItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* MODAL FORM */
+.input-field{
+  width: 100%;
+}
+
+.category{
+ cursor: pointer;
+}
+
+/* .img-category {
+  height: 50px;
+  width: 60px;
+  border-radius: 50px;
+  transition: transform 0.3s ease; 
+} */
+
+.img-category {
+  height: 45px;
+  width: 55px;
+  border-radius: 50px;
+  transition: transform 0.3s ease;
+  display: inline-block; 
+  margin-right: 10px; 
+}
+
+.img-category:hover {
+  transform: scale(1.1); 
+}
+
+
+
+
+/*---------------- Register User------------- */
+.register-form{
+  background-color: transparent;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 15px 30px 5px, rgba(255, 255, 255, 0.2) 0px 10px 10px 5px;
+}
+
+.register-form h1  {
+  text-align: center;
+  color: white;
+}
+
+.register{
+  background-image: url("https://images.pexels.com/photos/12935074/pexels-photo-12935074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
+
+.input-field{
+  width: 400px !important;
+}
+
+.btn-register {
+  width: 100px;
+  color: white;
+  }
+
+/*----------------- Login Page---------------------- */
+
+.login-form{
+  background-color: transparent;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 15px 30px 5px, rgba(255, 255, 255, 0.2) 0px 10px 10px 5px;
+  border-radius: 15px;
+  padding: 20px;
+  height: auto; 
+  width: 90%; 
+  max-width: 400px; 
+  color: white;
+}
+
+.login {
+  background-image: url("https://images.pexels.com/photos/12935074/pexels-photo-12935074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
+
+
+
+.logo {
+  width: 100px;
+  height: 100px;
+  margin-left: 40%;
+}
+
+ .btn-login{
+  width: 100%;
+  
+ }
+
+ .link{
+  color: white;
+ }
+
+ .eye {
+  color: aqua !important;
+  
+ }
+
+ /* .container-fluid {
+  max-width: 100%;
+  overflow: hidden;
+ 
+} */
+
+/* -----------FORGOT PASSWORD--------------- */
+
+.Form-resetPass{
+  background-color: transparent;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 15px 30px 5px, rgba(255, 255, 255, 0.2) 0px 10px 10px 5px;
+  border-radius: 15px;
+  padding: 20px;
+  height: auto; 
+  width: 90%; 
+  max-width: 400px; 
+  color: white;
+}
+
+.Forgot-Password{
+  background-image: url("https://images.pexels.com/photos/12935074/pexels-photo-12935074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
+
+.Form-resetPass h2  {
+  text-align: center;
+  color: white;
+}
+
+/* Reset Password Form */
+
+.Reset-Password {
+  background-image: url("https://images.pexels.com/photos/12935074/pexels-photo-12935074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
+
+.Form-resetPass{
+  background-color: transparent;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 15px 30px 5px, rgba(255, 255, 255, 0.2) 0px 10px 10px 5px;
+  border-radius: 15px;
+  padding: 20px;
+  height: auto; 
+  width: 90%; 
+  max-width: 400px; 
+  color: white;
+}
+
+/* ---------User Manage---------------- */
+.btn-addUser {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/*=====================Shift Border=============== */
+.Shift-Form{
+  background-image: url("https://images.pexels.com/photos/12935074/pexels-photo-12935074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; 
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+ }
+
+.shift-border {
+  background-color: transparent;
+  box-shadow: rgba(255, 255, 255, 0.3) 0px 15px 30px 5px, rgba(255, 255, 255, 0.2) 0px 10px 10px 5px;
+  border-radius: 15px;
+  padding: 80px;
+  height: auto; 
+  width: 50%; 
+  max-width: 400px; 
+  color: white;
+  }
+  .Close-Form{
+    height: 100vh;
+    margin: 0 auto; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+  }
+
+ .Close-border{
+  background-color: transparent;
+  box-shadow: rgba(107, 148, 196, 0.3) 0px 15px 30px 5px, rgba(82, 113, 197, 0.2) 0px 10px 10px 5px;
+  border-radius: 15px;
+  padding: 80px;
+  height: auto; 
+  width: 100%; 
+  max-width: 400px; 
+  color: rgb(62, 132, 173);
+  }
+
+/* ========WEEKLY SALES =================== */
+.date-picker{
+  margin-bottom: 5px;
+}
+
+
+/* =========Card Dashboard====== */
+
+.Card-Sales1{
+  background-color: #FE9895;
+ 
+}
+
+.Card-Sales2{
+  background-color: #45A1EB;
+}
+
+.Card-Sales3{
+  background-color: #48D3C1;
+}
+
+
+/* Daily Item Sold */
+.horizontal-align {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+.horizontal-align label {
+  margin-right: 5px;
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+  .login-form {
+    width: 95%; 
+  }
+
+  .register-form{
+    width: 95%; 
+  }
+
+  .Form-resetPass{
+    width: 95%; 
+  }
+
+  .category {
+    width: 100%;
+    max-width: 50px;
+    text-align: center;
+  }
+
+  .img-category {
+    display: block; 
+    max-width: 100%; 
+    height: auto; 
+  }
+  /* .custom-card {
+   flex-direction: row;
+   align-content: center;
+   max-width: 300px;
+  } */
+ 
+  .custom-card-img {
+    height: 60px; /* Adjust height for smaller devices */
+    width: 60px; /* Adjust width for smaller devices */
+  }
+
+  .shift-border {
+    margin-right: 10px; 
+    margin-bottom: 10px; 
+    padding: 10px; 
+  }
+}
+
+.category {
+  width: 100%;
+  max-width: 40px;
+  align-content: center;
+}
+
+.img-category {
+  display: block; 
+  max-width: 100%; 
+  height: auto; 
+}
+
+
+
+@media screen and (max-width: 480px) {
+  .login-form {
+    width: 100%; 
+    padding: 15px;
+  }
+
+  .register-form{
+    width: 100%; 
+    padding: 15px;
+  }
+
+  .Form-resetPass{
+    width: 100%; 
+    padding: 15px;
+  }
+
+  .custom-card-img {
+    height: 40px; 
+    width: 40px; 
+  }
+  
+  
+ .img-category {
+    display: inline-block; 
+  }
+
+/* #btn {
+    font-size: 14px; 
+    padding: 8px 16px; 
+    border-radius: 10px; 
+  } */
+
+  .shift-border {
+    margin-right: 5px; 
+    padding: 5px; 
+  }
+
+}
