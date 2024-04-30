@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import moment from "moment-timezone";
 
 function DailySales() {
   const [totalSales, setTotalSales] = useState(0);
@@ -7,31 +8,25 @@ function DailySales() {
   useEffect(() => {
     const fetchDailySales = async () => {
       try {
-        // Get the start and end of the current day
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        const timezone = "Asia/Manila";
+        const startOfDay = moment.tz(moment(), timezone).startOf("day");
+        const endOfDay = moment.tz(moment(), timezone).endOf("day");
 
-        // Make a POST request to fetch the daily sales
         const response = await axios.post(
           "https://pos-mh.onrender.com/bills/day-sales",
           {
-            startOfDay: startOfDay,
-            endOfDay: endOfDay,
+            startOfDay: startOfDay.toDate(),
+            endOfDay: endOfDay.toDate(),
           }
         );
 
-        // Extract daily sales data from the response
         const dailySales = response.data.dailySales;
 
-        // Calculate total sales from the daily sales data
         let total = 0;
         for (const date in dailySales) {
           total += dailySales[date];
         }
 
-        // Update state with the total sales
         setTotalSales(total);
       } catch (error) {
         console.error("Error fetching daily sales:", error);

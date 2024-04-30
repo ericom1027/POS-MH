@@ -6,6 +6,7 @@ import DailySales from "../components/DailySales";
 import WeeklySales from "../components/WeeklySales";
 import MonthlySales from "../components/monthlySales";
 import HomeIcon from "@mui/icons-material/Home";
+import logo from "../assets/logo.png";
 
 export default function DashboardPage() {
   return (
@@ -68,6 +69,10 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
               </Box>
+            </Col>
+            <Col className="col-logo" xs={12}>
+              <img className="img-logo" src={logo} alt="Logo" />
+              <h6>MH 1 Branch</h6>
             </Col>
           </Row>
         </Box>

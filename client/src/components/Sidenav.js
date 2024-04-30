@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -9,7 +9,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -37,6 +36,7 @@ import NextWeekOutlinedIcon from "@mui/icons-material/NextWeekOutlined";
 import TodayOutlinedIcon from "@mui/icons-material/TodayOutlined";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { Col, Row, Container } from "react-bootstrap";
 
 const drawerWidth = 220;
@@ -90,7 +90,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Sidenav() {
   const { cartItems, loading } = useSelector((state) => state.rootReducer);
-  const theme = useTheme();
+
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
@@ -170,11 +170,7 @@ export default function Sidenav() {
         )}
         <DrawerHeader>
           <IconButton onClick={handleDrawerToggle}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {open ? <ChevronLeftIcon /> : <MenuOutlinedIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -286,7 +282,9 @@ export default function Sidenav() {
                 ...(open && { display: "none" }),
               }}
             ></IconButton>
-
+            <Col>
+              <h6 id="typing-text">KANTO SIETE PARES MAMI - MH 1 Branch</h6>
+            </Col>
             <div
               style={{
                 display: "flex",

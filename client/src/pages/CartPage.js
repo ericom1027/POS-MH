@@ -24,7 +24,7 @@ export default function CartPage() {
     customerNumber: "",
     paymentMode: "",
     cash: "",
-    isSeniorOrPWD: false, // Added a state to track if customer is eligible for discount
+    isSeniorOrPWD: false,
   });
 
   useEffect(() => {

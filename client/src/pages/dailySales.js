@@ -5,18 +5,11 @@ import { Table, Button } from "react-bootstrap";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
 import DatePicker from "react-datepicker";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import PaginationItem from "@mui/material/PaginationItem";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 function DailySales() {
   const [dailySales, setDailySales] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchDailySales = async () => {
@@ -51,18 +44,12 @@ function DailySales() {
     setTotalSales(total);
   };
 
-  const paginate = (page) => {
-    setCurrentPage(page);
-  };
-
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = dailySales.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = dailySales;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -143,20 +130,6 @@ function DailySales() {
               </tfoot>
             </Table>
           </div>
-          {/* Pagination */}
-          <Stack spacing={2} alignItems="flex-end">
-            <Pagination
-              color="primary"
-              count={Math.ceil(dailySales.length / itemsPerPage)}
-              renderItem={(item) => (
-                <PaginationItem
-                  slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                  {...item}
-                />
-              )}
-              onChange={(event, page) => paginate(page)}
-            />
-          </Stack>
         </div>
       </div>
     </Box>

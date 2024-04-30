@@ -28,14 +28,14 @@ const ItemList = ({ item }) => {
   };
 
   return (
-    <div className="custom-card-container mt-5">
+    <div className="custom-card-container mt-3">
       <Card onClick={() => handleAddToCart()} className="custom-card">
         <Card.Img className="custom-card-img" variant="top" src={item.image} />
         <Card.Body>
           {/* <div onClick={() => handleAddToCart()}> */}
           <Card.Text>{item.name}</Card.Text>
-          <Card.Text>{item.size}</Card.Text>
-          <Card.Text>{formattedPrice}</Card.Text>
+          <label>{item.size}</label>
+          <label>{formattedPrice}</label>
           {/* </div> */}
           {/* <Button
             onClick={() => handleAddToCart()}

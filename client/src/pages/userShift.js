@@ -23,7 +23,13 @@ const ShiftPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => console.log(response.data))
-        .catch((error) => toast.error("Error fetching user data:", error));
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          toast.error(
+            "Error fetching user data. Please try again later.",
+            toastOptions
+          );
+        });
     }
   }, [user]);
 
@@ -35,19 +41,29 @@ const ShiftPage = () => {
         return;
       }
 
+      // Validate starting cash input
+      const startingCash = parseFloat(newShift.startingCash);
+      if (isNaN(startingCash) || startingCash < 0) {
+        toast.error(
+          "Please enter a valid non-negative starting cash amount.",
+          toastOptions
+        );
+        return;
+      }
+
       await axios.post(
-        `https://pos-mh.onrender.com/shifts/openShift`,
-        { firstName: user.firstName, startingCash: newShift.startingCash },
+        "https://pos-mh.onrender.com/shifts/openShift",
+        { firstName: user.firstName, startingCash: startingCash },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Shift opened successfully!", toastOptions);
-      setNewShift({ firstName: "", startingCash: "" });
+      setNewShift({ firstName: user.firstName, startingCash: "" });
       // Redirect to home page after opening shift
       navigate("/home");
     } catch (error) {
+      console.error("Error opening shift:", error);
       toast.error(
-        "Please enter the starting cash before opening shift:",
-        error,
+        "Failed to open shift. Please try again later.",
         toastOptions
       );
     }

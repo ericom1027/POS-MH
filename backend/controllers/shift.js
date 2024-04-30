@@ -1,7 +1,6 @@
 const Shift = require("../models/Shift");
 const User = require("../models/User");
 const Bills = require("../models/Bills");
-const moment = require("moment-timezone");
 
 // Controller for opening a new shift
 exports.openShift = async (req, res) => {
@@ -30,9 +29,11 @@ exports.openShift = async (req, res) => {
 };
 
 // Controller for closing an existing shift
+
 exports.closeShift = async (req, res) => {
   try {
-    const { firstName, endingCash } = req.body;
+    const { firstName, startingCash, endingCash, expectedCashAmount } =
+      req.body;
 
     const user = await User.findOne({ firstName });
 
@@ -42,7 +43,12 @@ exports.closeShift = async (req, res) => {
 
     const shift = await Shift.findOneAndUpdate(
       { user: user._id, endTime: null },
-      { endTime: new Date(), endingCash },
+      {
+        endTime: new Date(),
+        endingCash,
+        startingCash,
+        expectedCashAmount,
+      },
       { new: true }
     );
 
@@ -63,82 +69,43 @@ exports.closeShift = async (req, res) => {
 
 exports.getShifts = async (req, res) => {
   try {
-    if (req.query.firstName) {
-      const shifts = await Shift.find({
-        "user.firstName": req.query.firstName,
-      }).populate("user");
-      if (shifts.length === 0) {
-        return res
-          .status(404)
-          .json({ error: "No shifts found for user with provided first name" });
-      }
-      res.json(shifts);
-    } else {
-      const shifts = await Shift.find().populate("user");
-      res.json(shifts);
+    // Extract the date parameter from the request query
+    const { date } = req.query;
+
+    // Check if the date parameter is provided
+    if (!date) {
+      return res.status(400).json({ error: "Date parameter is required" });
     }
-  } catch (error) {
-    console.error("Error fetching shifts:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
-// =====Fetch all Shift Data======
-exports.getAllShifts = async (req, res) => {
-  try {
-    // Parse the selected date
-    const selectedDateParts = req.body.selectedDate.split("-");
-    const selectedDate = new Date(
-      parseInt(selectedDateParts[2]), // Year
-      parseInt(selectedDateParts[0]) - 1, // Month (subtract 1 because months are 0-indexed)
-      parseInt(selectedDateParts[1]) // Day
-    );
+    // Parse the date parameter to a JavaScript Date object
+    const selectedDate = new Date(date);
 
-    // Convert selected date to server timezone (Asia/Manila)
-    const selectedDateServerTimezone = moment
-      .utc(selectedDate)
-      .tz("Asia/Manila")
-      .toDate();
-
+    // Calculate the start and end of the selected day
     const startOfDay = new Date(
-      selectedDateServerTimezone.getFullYear(),
-      selectedDateServerTimezone.getMonth(),
-      selectedDateServerTimezone.getDate(),
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
       0,
       0,
       0
     );
-
     const endOfDay = new Date(
-      selectedDateServerTimezone.getFullYear(),
-      selectedDateServerTimezone.getMonth(),
-      selectedDateServerTimezone.getDate(),
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
       23,
       59,
       59
     );
 
-    const query = {
-      startTime: {
-        $gte: startOfDay,
-        $lt: endOfDay,
-      },
-    };
+    // Find shifts for the selected day
+    const shifts = await Shift.find({
+      startTime: { $gte: startOfDay, $lte: endOfDay },
+    }).populate("user");
 
-    // Fetch all shifts
-    const allShifts = await Shift.find(query).populate("user", "firstName");
-
-    if (allShifts.length === 0) {
-      // If no records found, send a message
-      return res
-        .status(200)
-        .json({ message: "No records found for the selected date." });
-    }
-
-    // If records found, send the shifts data
-    res.status(200).json({ allShifts });
+    res.json(shifts);
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching shifts:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

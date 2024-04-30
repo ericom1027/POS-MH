@@ -9,25 +9,55 @@ import Sidenav from "../components/Sidenav";
 
 const CloseShift = () => {
   const [closingShift, setClosingShift] = useState({ endingCash: "" });
+  const [expectedCash, setExpectedCash] = useState(null);
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
-
+  const [selectedDate] = useState(new Date());
+  const [dailySalesPerCashier, setDailySalesPerCashier] = useState({});
   const toastOptions = {
     autoClose: 900,
     pauseOnHover: true,
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && !user) {
-      axios
-        .get(`https://pos-mh.onrender.com/shifts/getShift`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => console.log(response.data))
-        .catch((error) => toast.error("Error fetching user data:", error));
+    const fetchDailySales = async () => {
+      try {
+        const timestamp = selectedDate.getTime();
+        const response = await axios.get(
+          "https://pos-mh.onrender.com/bills/daily-sales",
+          {
+            params: {
+              createdAt: timestamp,
+            },
+          }
+        );
+
+        const salesByCashier = {};
+        response.data.forEach((transaction) => {
+          const { cashierName, totalAmount } = transaction;
+          salesByCashier[cashierName] =
+            (salesByCashier[cashierName] || 0) + totalAmount;
+        });
+
+        setDailySalesPerCashier(salesByCashier);
+      } catch (error) {
+        console.error("Error fetching daily sales:", error);
+        toast.error(
+          "Error fetching daily sales. Please try again later.",
+          toastOptions
+        );
+      }
+    };
+
+    fetchDailySales();
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (user.firstName && dailySalesPerCashier[user.firstName] !== undefined) {
+      const expectedCashAmount = dailySalesPerCashier[user.firstName];
+      setExpectedCash(expectedCashAmount);
     }
-  }, [user]);
+  }, [dailySalesPerCashier, user.firstName]);
 
   const handleCloseShift = async () => {
     try {
@@ -37,22 +67,46 @@ const CloseShift = () => {
         return;
       }
 
+      if (
+        closingShift.endingCash === "" ||
+        isNaN(parseFloat(closingShift.endingCash))
+      ) {
+        toast.error("Please enter a valid ending cash amount.", toastOptions);
+        return;
+      }
+
+      const shiftData = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        startingCash: user.startingCash,
+        endingCash: parseFloat(closingShift.endingCash).toFixed(2),
+        expectedCashAmount:
+          expectedCash !== null ? expectedCash.toFixed(2) : "",
+      };
+
       await axios.put(
         "https://pos-mh.onrender.com/shifts/closeShift",
-        { firstName: user.firstName, endingCash: closingShift.endingCash },
-        { headers: { Authorization: `Bearer ${token}` } }
+        shiftData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
+
       toast.success("Shift closed successfully!", toastOptions);
       setClosingShift({ endingCash: "" });
-      // Redirect to home page after closing shift
       navigate("/logout");
     } catch (error) {
+      console.error("Error closing shift:", error);
       toast.error(
-        "You need to open a shift before closing it:",
-        error,
+        "Failed to close shift. Please try again later.",
         toastOptions
       );
     }
+  };
+
+  const handleEndingCashChange = (e) => {
+    const endingCashValue = e.target.value;
+    setClosingShift({ endingCash: endingCashValue });
   };
 
   return (
@@ -62,23 +116,29 @@ const CloseShift = () => {
         <div className="Close-border">
           <Form className="mt-4 text-center">
             <h4>Close Shift</h4>
+            <Form.Group className="mb-2 hidden">
+              {/* <Form.Label>{`${user.firstName} ${user.lastName} - Expected Cash Amount`}</Form.Label> */}
+              <Form.Control
+                type="text"
+                readOnly
+                value={expectedCash !== null ? expectedCash.toFixed(2) : ""}
+              />
+            </Form.Group>
+
             <Form.Group className="mb-2">
-              <Form.Label>Ending Cash</Form.Label>
+              <Form.Label>
+                Ending Cash<span className="required">*</span>
+              </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Ending Cash"
                 value={closingShift.endingCash}
-                onChange={(e) =>
-                  setClosingShift({
-                    ...closingShift,
-                    endingCash: e.target.value,
-                  })
-                }
+                onChange={handleEndingCashChange}
               />
             </Form.Group>
 
             <Button variant="primary" onClick={handleCloseShift}>
-              Close Shift
+              Confirm Close Shift
             </Button>
           </Form>
         </div>

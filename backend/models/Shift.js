@@ -20,6 +20,10 @@ const shiftSchema = new mongoose.Schema({
   endingCash: {
     type: Number,
   },
+
+  expectedCashAmount: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("Shift", shiftSchema);

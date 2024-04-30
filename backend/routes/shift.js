@@ -9,7 +9,6 @@ router.put("/closeShift", shiftController.closeShift);
 
 router.get("/getShift", shiftController.getShifts);
 
-router.post("/allShift", shiftController.getAllShifts);
-
 router.get("/getCashierTotalSales", shiftController.getDailySalesByCashier);
+
 module.exports = router;

@@ -291,15 +291,15 @@ module.exports.getDailySalesTotal = async (req, res) => {
   try {
     const { startOfDay, endOfDay } = req.body;
 
-    // Set start and end of day timestamps
-    const dayStart = new Date(startOfDay);
-    const dayEnd = new Date(endOfDay);
-    dayEnd.setHours(23, 59, 59, 999);
+    // Set start and end of day timestamps with timezone
+    const timezone = "Asia/Manila"; // I-set ang timezone dito
+    const dayStart = moment.tz(startOfDay, timezone).startOf("day");
+    const dayEnd = moment.tz(endOfDay, timezone).endOf("day");
 
     const daySales = await Bills.find({
       createdAt: {
-        $gte: dayStart,
-        $lte: dayEnd,
+        $gte: dayStart.toDate(),
+        $lte: dayEnd.toDate(),
       },
     });
 
@@ -309,8 +309,7 @@ module.exports.getDailySalesTotal = async (req, res) => {
     // Calculate daily sales totals
     daySales.forEach((sale) => {
       // Get the date without converting it to ISO format
-      const date = new Date(sale.createdAt);
-      date.setHours(0, 0, 0, 0); // Set time to midnight to consider the entire day
+      const date = moment.tz(sale.createdAt, timezone).startOf("day");
 
       // Accumulate the totalAmount for each day
       if (dailySales[date]) {

@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button, Table } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Sidenav from "../components/Sidenav";
-import UserContext from "../UserContext";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import { useReactToPrint } from "react-to-print";
@@ -15,39 +14,31 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import moment from "moment-timezone";
 
 const ShiftPage = () => {
-  const { user, setUser } = useContext(UserContext);
   const [shifts, setShifts] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [dailySalesPerCashier, setDailySalesPerCashier] = useState({});
+  const [showTotalAmount] = useState(false);
   const componentRef = useRef();
-
-  const toastOptions = {
-    autoClose: 900,
-    pauseOnHover: true,
-  };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
   const formatDate = (date) => {
-    const formattedDate = moment(date).format("MM-DD-YYYY");
-    return formattedDate;
+    return moment(date).format("YYYY-MM-DD");
   };
 
   const fetchShifts = async () => {
     try {
       const formattedDate = formatDate(selectedDate);
-      const response = await axios.post(
-        "https://pos-mh.onrender.com/shifts/allShift",
-        { selectedDate: formattedDate }
+      const response = await axios.get(
+        `https://pos-mh.onrender.com/shifts/getShift?date=${formattedDate}`
       );
       if (response.status === 200) {
-        setShifts(response.data.allShifts);
+        setShifts(response.data);
       } else {
-        toast.error("Error fetching shifts:", response.data, toastOptions);
+        toast.error("Error fetching shifts:", response.data);
       }
     } catch (error) {
       console.error("Error fetching shifts:", error);
@@ -58,62 +49,21 @@ const ShiftPage = () => {
     fetchShifts();
   }, [selectedDate]);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && !user) {
-      axios
-        .get(`https://pos-mh.onrender.com/shifts/getShift`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          setShifts(response.data);
-          setUser(response.data);
-        })
-        .catch((error) => toast.error("Error fetching user data:", error));
-    }
-  }, [user, setUser]);
-
-  useEffect(() => {
-    const fetchDailySales = async () => {
-      try {
-        const timestamp = selectedDate.getTime();
-        const response = await axios.get(
-          "https://pos-mh.onrender.com/bills/daily-sales",
-          {
-            params: {
-              createdAt: timestamp,
-            },
-          }
-        );
-
-        const salesByCashier = {};
-        response.data.forEach((transaction) => {
-          const { cashierName, totalAmount, createdAt } = transaction;
-          const transactionDate = new Date(createdAt);
-          const day = transactionDate.toLocaleDateString();
-
-          if (!salesByCashier[cashierName]) {
-            salesByCashier[cashierName] = { day, totalSales: 0, cashierName };
-          }
-
-          salesByCashier[cashierName].totalSales += totalAmount;
-        });
-
-        setDailySalesPerCashier(salesByCashier);
-      } catch (error) {
-        console.error("Error fetching daily sales:", error);
-      }
-    };
-
-    fetchDailySales();
-  }, [selectedDate]);
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  const calculateDifference = (shift) => {
+    const startingCash = parseFloat(shift.startingCash) || 0;
+    const endingCash = parseFloat(shift.endingCash) || 0;
+    const expectedCashAmount = shift.expectedCashAmount || 0;
+    const total = endingCash - startingCash;
+    return expectedCashAmount - total;
+  };
+
   const pageCount = shifts ? Math.ceil(shifts.length / itemsPerPage) : 0;
-  const indexOfLastItem = shifts ? currentPage * itemsPerPage : 0;
-  const indexOfFirstItem = shifts ? indexOfLastItem - itemsPerPage : 0;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = shifts
     ? shifts.slice(indexOfFirstItem, indexOfLastItem)
     : [];
@@ -130,7 +80,7 @@ const ShiftPage = () => {
           Print
         </Button>
         <div className="container-fluid" ref={componentRef}>
-          <h4>Employee Shift Reports</h4>
+          <h4>Employee Shift Report</h4>
           <label>Date:</label>
           <DatePicker
             selected={selectedDate}
@@ -149,47 +99,60 @@ const ShiftPage = () => {
                 <th>Starting cash</th>
                 <th>Actual cash amount</th>
                 <th>Expected cash amount</th>
+                {showTotalAmount && <th>Total Amount</th>}
                 <th>Difference</th>
               </tr>
             </thead>
             <tbody>
               {!currentItems || currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="text-center">
+                  <td colSpan="10" className="text-center">
                     No records found for the selected date.
                   </td>
                 </tr>
               ) : (
-                currentItems.map((shift, index) => {
-                  const startingCash = parseFloat(shift.startingCash) || 0;
-                  const endingCash = parseFloat(shift.endingCash) || 0;
-                  const cashierName = shift.user.firstName;
-                  const expectedCashAmount =
-                    dailySalesPerCashier[cashierName]?.totalSales || 0;
-                  const difference =
-                    startingCash + endingCash - expectedCashAmount;
-                  return (
-                    <tr key={`shift-${index}`}>
-                      <td>{index + 1}</td>
-                      <td>{cashierName}</td>
-                      <td>{moment(shift.startTime).format("MM-DD-YYYY")} </td>
-                      <td>{moment(shift.startTime).format("hh:mm:ss A")} </td>
-                      <td>{moment(shift.endTime).format("hh:mm:ss A")} </td>
-                      <td>{startingCash.toFixed(2)}</td>
-                      <td>{endingCash.toFixed(2)}</td>
+                currentItems.map((shift, index) => (
+                  <tr key={`shift-${index}`}>
+                    <td>{index + 1}</td>
+                    <td>
+                      {shift.user.firstName} {shift.user.lastName}
+                    </td>
+                    <td>{moment(shift.startTime).format("MM-DD-YYYY")}</td>
+                    <td>{moment(shift.startTime).format("hh:mm:ss A")}</td>
+                    <td>{moment(shift.endTime).format("hh:mm:ss A")}</td>
+                    <td>
+                      {shift.startingCash !== null
+                        ? shift.startingCash.toFixed(2)
+                        : "0.00"}
+                    </td>
+                    <td>
+                      {shift.endingCash !== null
+                        ? shift.endingCash.toFixed(2)
+                        : "0.00"}
+                    </td>
+                    <td>
+                      {shift.expectedCashAmount !== null
+                        ? shift.expectedCashAmount.toFixed(2)
+                        : "0.00"}
+                    </td>
+                    {showTotalAmount && (
                       <td>
-                        {typeof expectedCashAmount === "number"
-                          ? expectedCashAmount.toFixed(2)
-                          : "N/A"}
+                        {shift.startingCash !== null &&
+                        shift.endingCash !== null &&
+                        shift.expectedCashAmount !== null
+                          ? (shift.startingCash - shift.endingCash).toFixed(2)
+                          : "0.00"}
                       </td>
-                      {/* Display expected cash amount */}
-                      <td>
-                        {isNaN(difference) ? "N/A" : difference.toFixed(2)}
-                      </td>{" "}
-                      {/* Display the calculated difference, handle NaN */}
-                    </tr>
-                  );
-                })
+                    )}
+                    <td>
+                      {shift.startingCash !== null &&
+                      shift.endingCash !== null &&
+                      shift.expectedCashAmount !== null
+                        ? calculateDifference(shift).toFixed(2)
+                        : "0.00"}
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </Table>

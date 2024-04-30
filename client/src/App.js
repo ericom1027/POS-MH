@@ -46,7 +46,7 @@ export default function App() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://pos-mh.onrender.com/users/details`,
+            "https://pos-mh.onrender.com/users/details",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -116,10 +116,10 @@ export default function App() {
           )}
 
           {/* Public routes */}
+          <Route path="*" element={<ErrorPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset/:token" element={<ResetPassword />} />
           <Route path="/login" element={<Login />} />
-          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>
     </UserProvider>
