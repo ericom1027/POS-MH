@@ -92,7 +92,9 @@ const DailySalesTable = () => {
           <h4>Daily Sales by Employee</h4>
           <DatePicker
             selected={selectedDate}
+            className="form-control"
             onChange={(date) => setSelectedDate(date)}
+            maxDate={new Date()}
           />
           <Table striped bordered hover>
             <thead>
