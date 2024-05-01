@@ -53,21 +53,21 @@ const ShiftPage = () => {
     setCurrentPage(pageNumber);
   };
 
-  // const calculateDifference = (shift) => {
-  //   const startingCash = parseFloat(shift.startingCash) || 0;
-  //   const endingCash = parseFloat(shift.endingCash) || 0;
-  //   const expectedCashAmount = shift.expectedCashAmount || 0;
-  //   const total = endingCash - startingCash;
-  //   return expectedCashAmount - total;
-  // };
-
   const calculateDifference = (shift) => {
-    // const startingCash = parseFloat(shift.startingCash) || 0;
+    const startingCash = parseFloat(shift.startingCash) || 0;
     const endingCash = parseFloat(shift.endingCash) || 0;
     const expectedCashAmount = shift.expectedCashAmount || 0;
-    const difference = endingCash - expectedCashAmount;
-    return difference;
+    const total = endingCash - startingCash;
+    return expectedCashAmount - total;
   };
+
+  // const calculateDifference = (shift) => {
+  //   // const startingCash = parseFloat(shift.startingCash) || 0;
+  //   const endingCash = parseFloat(shift.endingCash) || 0;
+  //   const expectedCashAmount = shift.expectedCashAmount || 0;
+  //   const difference = endingCash - expectedCashAmount;
+  //   return difference;
+  // };
 
   const pageCount = shifts ? Math.ceil(shifts.length / itemsPerPage) : 0;
   const indexOfLastItem = currentPage * itemsPerPage;
