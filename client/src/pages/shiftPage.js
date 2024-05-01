@@ -121,17 +121,20 @@ const ShiftPage = () => {
                     <td>{moment(shift.startTime).format("hh:mm:ss A")}</td>
                     <td>{moment(shift.endTime).format("hh:mm:ss A")}</td>
                     <td>
-                      {shift.startingCash !== null
+                      {shift.startingCash !== null &&
+                      shift.startingCash !== undefined
                         ? shift.startingCash.toFixed(2)
                         : "0.00"}
                     </td>
                     <td>
-                      {shift.endingCash !== null
+                      {shift.endingCash !== null &&
+                      shift.endingCash !== undefined
                         ? shift.endingCash.toFixed(2)
                         : "0.00"}
                     </td>
                     <td>
-                      {shift.expectedCashAmount !== null
+                      {shift.expectedCashAmount !== null &&
+                      shift.expectedCashAmount !== undefined
                         ? shift.expectedCashAmount.toFixed(2)
                         : "0.00"}
                     </td>
