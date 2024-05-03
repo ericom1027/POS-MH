@@ -47,7 +47,8 @@ function BillModal({ bill, show, onHide, onVoid }) {
               <h3>Kanto Siete Pares Mami</h3>
               <p>
                 {" "}
-                Address: 142 MA, CLARA, Barangay 111, DISTRICT 2, CALOOCAN CITY
+                Address: 153 M.H, DEL PILAR ST., 9TH AVE., Barangay 106,
+                DISTRICT 2, CALOOCAN CITY
               </p>
               {/* <p>Contact No. 12345678901 | Address: Manila, Philippines</p> */}
               {/* <p>VAT Reg TIN: 240-000-000-000-00000</p> */}
