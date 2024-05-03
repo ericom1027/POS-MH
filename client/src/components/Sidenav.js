@@ -341,7 +341,7 @@ export default function Sidenav() {
           className="shiftMenuItem"
         >
           <AccessTimeOutlinedIcon />
-          Shift by Employee
+          Shift
         </MenuItem>
         <MenuItem
           onClick={() => handleSubButtonClick("/totalSoldItem")}
