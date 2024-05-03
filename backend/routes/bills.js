@@ -10,6 +10,7 @@ const {
   getWeeklySalesTotal,
   getDailySalesTotal,
   fetchDailyTotalSoldItemsPerItem,
+  getDailySalesShift,
 } = require("../controllers/bills");
 
 const { verify, verifyAdmin } = require("../middlewares/auth");
@@ -36,5 +37,7 @@ router.post("/day-sales", getDailySalesTotal);
 router.post("/void", verify, verifyAdmin, voidInvoiceController);
 
 router.post("/sales", fetchDailyTotalSoldItemsPerItem);
+
+router.get("/dailyShift", getDailySalesShift);
 
 module.exports = router;

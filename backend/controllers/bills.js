@@ -135,6 +135,7 @@ module.exports.voidInvoiceController = (req, res) => {
 };
 
 // ===================Controller for fetching Daily sales======================
+
 module.exports.getDailySales = async (req, res) => {
   try {
     const timestamp = req.query.createdAt; // Get the timestamp from the query parameter
@@ -164,6 +165,47 @@ module.exports.getDailySales = async (req, res) => {
     res.json(dailySales);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// ===================Controller for  fetching Daily sales per Employee CloseShift======================
+
+module.exports.getDailySalesShift = async (req, res) => {
+  try {
+    // Get the date for which daily sales are requested
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ error: "Date parameter is missing" });
+    }
+
+    const ManilaTime = moment.tz(date, "Asia/Manila");
+
+    // Set shift start time to 4:00 PM of the previous day
+    const shiftStartTime = ManilaTime.clone()
+      .subtract(1, "day")
+      .startOf("day")
+      .add(0, "hours");
+
+    // Set shift end time to 4:00 PM of the current day
+    const shiftEndTime = ManilaTime.clone().startOf("day").add(16, "hours");
+
+    const bills = await Bills.find({
+      createdAt: { $gte: shiftStartTime.toDate(), $lt: shiftEndTime.toDate() },
+    });
+
+    const cashierSalesMap = {};
+    bills.forEach((bill) => {
+      if (!cashierSalesMap[bill.cashierName]) {
+        cashierSalesMap[bill.cashierName] = 0;
+      }
+      cashierSalesMap[bill.cashierName] += bill.totalAmount;
+    });
+
+    res.status(200).json({ cashierSales: cashierSalesMap });
+  } catch (error) {
+    console.error("Error fetching daily sales:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

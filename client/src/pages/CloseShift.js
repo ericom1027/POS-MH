@@ -9,43 +9,36 @@ import Sidenav from "../components/Sidenav";
 
 const CloseShift = () => {
   const [closingShift, setClosingShift] = useState({ endingCash: "" });
-  const [expectedCash, setExpectedCash] = useState(null);
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [selectedDate] = useState(new Date());
   const [dailySalesPerCashier, setDailySalesPerCashier] = useState({});
+  const [difference, setDifference] = useState("");
   const toastOptions = {
     autoClose: 900,
     pauseOnHover: true,
   };
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     const fetchDailySales = async () => {
       try {
-        const timestamp = selectedDate.getTime();
+        const formattedDate = formatDate(selectedDate);
         const response = await axios.get(
-          "https://pos-mh.onrender.com/bills/daily-sales",
-          {
-            params: {
-              createdAt: timestamp,
-            },
-          }
+          `https://pos-mh.onrender.com/bills/dailyShift?date=${formattedDate}`
         );
 
-        const salesByCashier = {};
-        response.data.forEach((transaction) => {
-          const { cashierName, totalAmount } = transaction;
-          salesByCashier[cashierName] =
-            (salesByCashier[cashierName] || 0) + totalAmount;
-        });
-
-        setDailySalesPerCashier(salesByCashier);
+        const { cashierSales } = response.data;
+        console.log(cashierSales); // Log the data
+        setDailySalesPerCashier(cashierSales);
       } catch (error) {
         console.error("Error fetching daily sales:", error);
-        toast.error(
-          "Error fetching daily sales. Please try again later.",
-          toastOptions
-        );
       }
     };
 
@@ -53,11 +46,18 @@ const CloseShift = () => {
   }, [selectedDate]);
 
   useEffect(() => {
-    if (user.firstName && dailySalesPerCashier[user.firstName] !== undefined) {
-      const expectedCashAmount = dailySalesPerCashier[user.firstName];
-      setExpectedCash(expectedCashAmount);
-    }
-  }, [dailySalesPerCashier, user.firstName]);
+    const expectedCashAmount =
+      dailySalesPerCashier[user.firstName] !== undefined
+        ? dailySalesPerCashier[user.firstName]
+        : 0;
+    const diff = expectedCashAmount - parseFloat(closingShift.endingCash || 0);
+    setDifference(diff.toFixed(2));
+  }, [
+    closingShift.endingCash,
+    dailySalesPerCashier,
+    user.firstName,
+    difference,
+  ]);
 
   const handleCloseShift = async () => {
     try {
@@ -75,13 +75,22 @@ const CloseShift = () => {
         return;
       }
 
+      const expectedCashAmount =
+        dailySalesPerCashier[user.firstName] !== undefined
+          ? dailySalesPerCashier[user.firstName]
+          : 0;
+
+      const difference =
+        expectedCashAmount - parseFloat(closingShift.endingCash);
+
       const shiftData = {
+        _id: user.shiftId,
         firstName: user.firstName,
         lastName: user.lastName,
         startingCash: user.startingCash,
         endingCash: parseFloat(closingShift.endingCash).toFixed(2),
-        expectedCashAmount:
-          expectedCash !== null ? expectedCash.toFixed(2) : "",
+        expectedCashAmount: parseFloat(expectedCashAmount).toFixed(2),
+        difference: difference.toFixed(2),
       };
 
       await axios.put(
@@ -106,8 +115,23 @@ const CloseShift = () => {
 
   const handleEndingCashChange = (e) => {
     const endingCashValue = e.target.value;
-    setClosingShift({ endingCash: endingCashValue });
+    setClosingShift((prevState) => ({
+      ...prevState,
+      endingCash: endingCashValue,
+    }));
+
+    const expectedCashAmount =
+      dailySalesPerCashier[user.firstName] !== undefined
+        ? dailySalesPerCashier[user.firstName]
+        : 0;
+    const difference = expectedCashAmount - parseFloat(endingCashValue || 0);
+    setDifference(difference.toFixed(2));
   };
+
+  const expectedCash =
+    user && dailySalesPerCashier[user.firstName]
+      ? dailySalesPerCashier[user.firstName]
+      : null;
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -117,7 +141,6 @@ const CloseShift = () => {
           <Form className="mt-4 text-center">
             <h4>Close Shift</h4>
             <Form.Group className="mb-2 hidden">
-              {/* <Form.Label>{`${user.firstName} ${user.lastName} - Expected Cash Amount`}</Form.Label> */}
               <Form.Control
                 type="text"
                 readOnly
@@ -125,6 +148,12 @@ const CloseShift = () => {
               />
             </Form.Group>
 
+            <Form.Group className="mb-2 hidden">
+              <Form.Label>
+                Difference<span className="required">*</span>
+              </Form.Label>
+              <Form.Control type="text" readOnly value={difference} />
+            </Form.Group>
             <Form.Group className="mb-2">
               <Form.Label>
                 Ending Cash<span className="required">*</span>

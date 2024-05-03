@@ -32,8 +32,13 @@ exports.openShift = async (req, res) => {
 
 exports.closeShift = async (req, res) => {
   try {
-    const { firstName, startingCash, endingCash, expectedCashAmount } =
-      req.body;
+    const {
+      firstName,
+      startingCash,
+      endingCash,
+      expectedCashAmount,
+      difference,
+    } = req.body;
 
     const user = await User.findOne({ firstName });
 
@@ -48,6 +53,7 @@ exports.closeShift = async (req, res) => {
         endingCash,
         startingCash,
         expectedCashAmount,
+        difference,
       },
       { new: true }
     );
@@ -65,7 +71,7 @@ exports.closeShift = async (req, res) => {
   }
 };
 
-// Controller for fetching shifts
+// ==========Controller for fetching shifts==================
 
 exports.getShifts = async (req, res) => {
   try {
@@ -134,9 +140,7 @@ exports.getDailySalesByCashier = async (req, res) => {
         0,
         0
       );
-    }
-    // Pag-filter para sa night shift (4:00 PM - 4:00 AM kinabukasan)
-    else {
+    } else {
       startOfDay = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth(),

@@ -1,26 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Button, Table } from "react-bootstrap";
+import { Button, Table, Col } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Sidenav from "../components/Sidenav";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
 import { useReactToPrint } from "react-to-print";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import PaginationItem from "@mui/material/PaginationItem";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import moment from "moment-timezone";
+import logo from "../assets/logo.png";
 
 const ShiftPage = () => {
   const [shifts, setShifts] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [showTotalAmount] = useState(false);
-  const componentRef = useRef();
 
+  const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -49,27 +44,6 @@ const ShiftPage = () => {
     fetchShifts();
   }, [selectedDate]);
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const calculateDifference = (shift) => {
-    const startingCash = parseFloat(shift.startingCash) || 0;
-    const endingCash = parseFloat(shift.endingCash) || 0;
-    const expectedCashAmount = shift.expectedCashAmount || 0;
-    const total = endingCash - startingCash;
-    return expectedCashAmount - total;
-  };
-
-  // const calculateDifference = (shift) => {
-  //   // const startingCash = parseFloat(shift.startingCash) || 0;
-  //   const endingCash = parseFloat(shift.endingCash) || 0;
-  //   const expectedCashAmount = shift.expectedCashAmount || 0;
-  //   const difference = endingCash - expectedCashAmount;
-  //   return difference;
-  // };
-
-  const pageCount = shifts ? Math.ceil(shifts.length / itemsPerPage) : 0;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = shifts
@@ -88,7 +62,7 @@ const ShiftPage = () => {
           Print
         </Button>
         <div className="container-fluid" ref={componentRef}>
-          <h4>Employee Shift Report</h4>
+          <h4>MH-1 Shift Reports</h4>
           <label>Date:</label>
           <DatePicker
             selected={selectedDate}
@@ -104,10 +78,9 @@ const ShiftPage = () => {
                 <th>Date</th>
                 <th>Opening time</th>
                 <th>Closing time</th>
-                <th>Starting cash</th>
+                <th className="hidden">Starting cash</th>
                 <th>Actual cash amount</th>
                 <th>Expected cash amount</th>
-                {showTotalAmount && <th>Total Amount</th>}
                 <th>Difference</th>
               </tr>
             </thead>
@@ -128,7 +101,7 @@ const ShiftPage = () => {
                     <td>{moment(shift.startTime).format("MM-DD-YYYY")}</td>
                     <td>{moment(shift.startTime).format("hh:mm:ss A")}</td>
                     <td>{moment(shift.endTime).format("hh:mm:ss A")}</td>
-                    <td>
+                    <td className="hidden">
                       {shift.startingCash !== null &&
                       shift.startingCash !== undefined
                         ? shift.startingCash.toFixed(2)
@@ -146,20 +119,10 @@ const ShiftPage = () => {
                         ? shift.expectedCashAmount.toFixed(2)
                         : "0.00"}
                     </td>
-                    {showTotalAmount && (
-                      <td>
-                        {shift.startingCash !== null &&
-                        shift.endingCash !== null &&
-                        shift.expectedCashAmount !== null
-                          ? (shift.startingCash - shift.endingCash).toFixed(2)
-                          : "0.00"}
-                      </td>
-                    )}
                     <td>
-                      {shift.startingCash !== null &&
-                      shift.endingCash !== null &&
-                      shift.expectedCashAmount !== null
-                        ? calculateDifference(shift).toFixed(2)
+                      {shift.difference !== null &&
+                      shift.difference !== undefined
+                        ? shift.difference.toFixed(2)
                         : "0.00"}
                     </td>
                   </tr>
@@ -168,20 +131,11 @@ const ShiftPage = () => {
             </tbody>
           </Table>
         </div>
-        <Stack spacing={2} alignItems="flex-end">
-          <Pagination
-            color="primary"
-            count={pageCount}
-            renderItem={(item) => (
-              <PaginationItem
-                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-                {...item}
-              />
-            )}
-            onChange={(event, page) => paginate(page)}
-          />
-        </Stack>
       </div>
+      <Col className="col-logo" xs={12}>
+        <img className="img-logo" src={logo} alt="Logo" />
+        <h6>MH 1 Branch</h6>
+      </Col>
     </Box>
   );
 };
