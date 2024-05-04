@@ -96,7 +96,7 @@ const DailySalesTable = () => {
             onChange={(date) => setSelectedDate(date)}
             maxDate={new Date()}
           />
-          <Table striped bordered hover>
+          <Table className="table-responsive" striped bordered hover>
             <thead>
               <tr>
                 <th>Date</th>

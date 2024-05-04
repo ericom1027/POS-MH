@@ -90,7 +90,7 @@ const TotalSoldItem = () => {
         </div>
         <div className="container-fluid" ref={componentRef}>
           <h4>Daily Items Sold</h4>
-          <Table striped bordered hover>
+          <Table className="table-responsive" striped bordered hover>
             <thead>
               <tr>
                 <th>Date Order</th>

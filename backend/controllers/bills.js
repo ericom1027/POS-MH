@@ -181,14 +181,26 @@ module.exports.getDailySalesShift = async (req, res) => {
 
     const ManilaTime = moment.tz(date, "Asia/Manila");
 
-    // Set shift start time to 4:00 PM of the previous day
-    const shiftStartTime = ManilaTime.clone()
-      .subtract(1, "day")
-      .startOf("day")
-      .add(0, "hours");
+    // Get the current hour
+    const currentHour = ManilaTime.hour();
 
-    // Set shift end time to 4:00 PM of the current day
-    const shiftEndTime = ManilaTime.clone().startOf("day").add(16, "hours");
+    // Determine shift type based on current hour
+    let shiftStartTime, shiftEndTime, shiftType;
+
+    if (currentHour >= 4 && currentHour < 16) {
+      // Morning shift (4:00 AM to 4:00 PM)
+      shiftStartTime = ManilaTime.clone().startOf("day").add(4, "hours");
+      shiftEndTime = ManilaTime.clone().startOf("day").add(16, "hours");
+      shiftType = "morning";
+    } else {
+      // Night shift (4:00 PM to 4:00 AM next day)
+      shiftStartTime = ManilaTime.clone().startOf("day").add(0, "hours");
+      shiftEndTime = ManilaTime.clone()
+        .add(1, "day")
+        .startOf("day")
+        .add(4, "hours");
+      shiftType = "night";
+    }
 
     const bills = await Bills.find({
       createdAt: { $gte: shiftStartTime.toDate(), $lt: shiftEndTime.toDate() },
@@ -202,7 +214,7 @@ module.exports.getDailySalesShift = async (req, res) => {
       cashierSalesMap[bill.cashierName] += bill.totalAmount;
     });
 
-    res.status(200).json({ cashierSales: cashierSalesMap });
+    res.status(200).json({ shiftType, cashierSales: cashierSalesMap });
   } catch (error) {
     console.error("Error fetching daily sales:", error);
     res.status(500).json({ error: "Internal Server Error" });

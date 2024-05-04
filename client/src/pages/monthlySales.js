@@ -78,7 +78,7 @@ const MonthlySales = () => {
             </Button>
             <div className="container-fluid" ref={componentRef}>
               <h4 className="text-center mt-3">Monthly Sales Report</h4>
-              <Table className="mt-2" striped bordered hover>
+              <Table className="mt-2 table-responsive" striped bordered hover>
                 <thead className="text-center">
                   <tr>
                     <th>Date Order</th>

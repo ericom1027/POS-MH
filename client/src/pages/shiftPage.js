@@ -70,7 +70,7 @@ const ShiftPage = () => {
             maxDate={new Date()}
           />
 
-          <Table className="mt-4" striped bordered hover>
+          <Table className="mt-4 table-responsive" striped bordered hover>
             <thead className="text-center">
               <tr>
                 <th>No.</th>
