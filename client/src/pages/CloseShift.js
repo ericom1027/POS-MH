@@ -35,7 +35,7 @@ const CloseShift = () => {
         );
 
         const { cashierSales } = response.data;
-        console.log("Cashier sales:", cashierSales); // Check if data is received
+        // console.log("Cashier sales:", cashierSales);
         setDailySalesPerCashier(cashierSales);
       } catch (error) {
         console.error("Error fetching daily sales:", error);
